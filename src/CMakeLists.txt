@@ -111,7 +111,7 @@ foreach(proto_file ${proto_files})
     INPUT_PROTO
       ${proto_file}
     PROTOC_EXEC
-      protobuf::protoc
+      ${IGN_MSGS_PROTOC_EXECUTABLE}
     OUTPUT_CPP_DIR
       "${PROJECT_BINARY_DIR}/include"
     OUTPUT_RUBY_DIR

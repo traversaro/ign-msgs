@@ -30,7 +30,7 @@ endif()
 # In a cross-compilation scenario, it is possible that the ign_msgs_gen
 # generator compiled for the target machine cannot be used to generate
 # the C++ code corresponding to the .proto definition. For this scenario,
-# the following two options can be used as follows.
+# the following options can be used as follows.
 # First of all, ign-msgs is compiled targeting the host machine, and in the
 # build targeting the host, the INSTALL_IGN_MSGS_GEN_EXECUTABLE option is
 # enabled:
@@ -40,7 +40,8 @@ endif()
 # can be cross-compiled, and in the cross-compilation build the location of the
 # host ign_msgs_gen is specified via the IGN_MSGS_GEN_EXECUTABLE
 # CMake cache variable:
-# > cmake -IGN_MSGS_GEN_EXECUTABLE=<host_install_prefix>/bin/ign_msgs_gen ..
+# > cmake -DIGN_MSGS_PROTOC_EXECUTABLE=<host_install_prefix>/bin/protoc
+#         -DIGN_MSGS_GEN_EXECUTABLE=<host_install_prefix>/bin/ign_msgs_gen ..
 
 option(
   INSTALL_IGN_MSGS_GEN_EXECUTABLE
@@ -54,6 +55,13 @@ set(
   CACHE STRING
   "ign_msgs_gen executable used in the ign_msgs_protoc CMake function.")
 mark_as_advanced(IGN_MSGS_GEN_EXECUTABLE)
+
+set(
+  IGN_MSGS_PROTOC_EXECUTABLE
+  "$<TARGET_FILE:libprotobuf::protoc>"
+  CACHE STRING
+  "protoc executable used in the ign_msgs_protoc CMake function.")
+mark_as_advanced(IGN_MSGS_PROTOC_EXECUTABLE)
 
 #============================================================================
 # Search for project-specific dependencies
