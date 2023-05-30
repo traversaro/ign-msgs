@@ -67,6 +67,13 @@ set(
   "gz_msgs_gen executable used in the gz_msgs_protoc CMake function.")
 mark_as_advanced(GZ_MSGS_GEN_EXECUTABLE)
 
+set(
+  GZ_MSGS_PROTOC_EXECUTABLE
+  "$<TARGET_FILE:protobuf::protoc>"
+  CACHE STRING
+  "protoc executable used in the gz_msgs_protoc CMake function.")
+mark_as_advanced(GZ_MSGS_PROTOC_EXECUTABLE)
+
 # TODO(CH3): Deprecated. Remove IGN_MSGS CMake variables on tick-tock.
 set(
   IGN_MSGS_GEN_EXECUTABLE
@@ -82,9 +89,7 @@ message(STATUS "\n\n-- ====== Finding Dependencies ======")
 
 #--------------------------------------
 # Find Protobuf
-set(REQ_PROTOBUF_VER 3)
 gz_find_package(GzProtobuf
-                 VERSION ${REQ_PROTOBUF_VER}
                  REQUIRED
                  COMPONENTS all
                  PRETTY Protobuf)

@@ -110,7 +110,7 @@ function(gz_msgs_protoc)
 
 
   set(GENERATE_ARGS
-      --protoc-exec "$<TARGET_FILE:${gz_msgs_protoc_PROTOC_EXEC}>"
+      --protoc-exec "${gz_msgs_protoc_PROTOC_EXEC}"
       --gz-generator-bin "${GZ_MSGS_GEN_EXECUTABLE}"
       --proto-path "${gz_msgs_protoc_PROTO_PATH}"
       --input-path "${ABS_FIL}"
@@ -158,7 +158,7 @@ foreach(proto_file ${proto_files})
     INPUT_PROTO
       ${proto_file}
     PROTOC_EXEC
-      protobuf::protoc
+      ${gz_msgs_protoc_PROTOC_EXEC}
     OUTPUT_CPP_DIR
       "${PROJECT_BINARY_DIR}/include"
     OUTPUT_RUBY_DIR
