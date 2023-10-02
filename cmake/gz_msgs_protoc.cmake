@@ -85,8 +85,14 @@ function(gz_msgs_protoc)
     set(${gz_msgs_protoc_OUTPUT_PYTHON_VAR} ${${gz_msgs_protoc_OUTPUT_PYTHON_VAR}} PARENT_SCOPE)
   endif()
 
+  if(TARGET ${gz_msgs_protoc_PROTOC_EXEC})
+    set(gz_msgs_protoc_PROTOC_EXEC_FILE_ABS_PATH "$<TARGET_FILE:${gz_msgs_protoc_PROTOC_EXEC}>")
+  else()
+    set(gz_msgs_protoc_PROTOC_EXEC_FILE_ABS_PATH {gz_msgs_protoc_PROTOC_EXEC})
+  endif()
+
   set(GENERATE_ARGS
-      --protoc-exec "$<TARGET_FILE:${gz_msgs_protoc_PROTOC_EXEC}>"
+      --protoc-exec "${gz_msgs_protoc_PROTOC_EXEC_FILE_ABS_PATH}"
       --gz-generator-bin "${gz_msgs_protoc_GZ_PROTOC_PLUGIN}"
       --proto-path "${gz_msgs_protoc_PROTO_PATH}"
       --input-path "${ABS_FIL}"

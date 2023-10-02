@@ -20,6 +20,7 @@ function(gz_msgs_generate_messages_impl)
   set(options "")
   set(oneValueArgs
     # Inputs
+    PROTOC_EXEC
     PROTO_PACKAGE MSGS_GEN_SCRIPT GZ_PROTOC_PLUGIN FACTORY_GEN_SCRIPT PROTO_PATH
     DEPENDENCY_DESCRIPTIONS
     DLLEXPORT_DECL
@@ -49,7 +50,7 @@ function(gz_msgs_generate_messages_impl)
       INPUT_PROTO
         ${proto_file}
       PROTOC_EXEC
-        protobuf::protoc
+        ${generate_messages_PROTOC_EXEC}
       GZ_PROTOC_PLUGIN
         ${generate_messages_GZ_PROTOC_PLUGIN}
       PROTO_PATH
@@ -130,6 +131,7 @@ endfunction()
 ##################################################
 # Options:
 # One value arguments:
+#   PROTOC_EXEC         - protoc target or executable to use
 #   PROTO_PATH          - Base directory of the proto files
 #   DEPENDENCY_DESCRIPTIONS - Variable containing all depedency description files
 #   OUTPUT_DIRECTORY - Directory of output gz_desc file
@@ -161,7 +163,7 @@ function(gz_msgs_generate_desc_impl)
 
   add_custom_command(
     OUTPUT ${generate_messages_OUTPUT_FILENAME}
-    COMMAND protobuf::protoc
+    COMMAND ${generate_messages_PROTOC_EXEC}
     ARGS ${ARGS}
     DEPENDS ${generate_messages_INPUT_PROTOS}
     COMMENT "Generating descriptor set"
@@ -175,6 +177,7 @@ endfunction()
 #   TARGET              - Target (static library) to create
 #   PROTO_PACKAGE       - Protobuf package the file belongs to (e.g. "gz.msgs")
 #   MSGS_GEN_SCRIPT     - Location of the messge generator script
+#   PROTOC_EXEC         - Protoc target or executable to use
 #   GZ_PROTOC_PLUGIN    - Location of the gazebo generator plugin
 #   FACTORY_GEN_SCRIPT  - Location of the factory generator script
 #   MSGS_LIB            - gz-msgs library to link to
@@ -221,6 +224,7 @@ function(gz_msgs_generate_messages_lib)
   )
 
   gz_msgs_generate_desc_impl(
+    PROTOC_EXEC ${generate_messages_PROTOC_EXEC}
     INPUT_PROTOS ${generate_messages_INPUT_PROTOS}
     PROTO_PATH ${generate_messages_PROTO_PATH}
     DEPENDENCY_DESCRIPTIONS ${depends_msgs_desc}
