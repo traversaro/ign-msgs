@@ -50,7 +50,7 @@ gz_configure_project(VERSION_SUFFIX
 
 set(
   ${PROJECT_NAME}_PROTO_GENERATOR_PLUGIN
-  "$<TARGET_FILE:gz_msgs_gen>"
+  "${PROJECT_NAME}_protoc_plugin"
   CACHE STRING
   "gz_msgs_gen executable used in the gz-msgs CMake functions.")
 mark_as_advanced(${PROJECT_NAME}_PROTO_GENERATOR_PLUGIN)

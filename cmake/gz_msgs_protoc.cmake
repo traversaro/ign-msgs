@@ -4,6 +4,7 @@
 #   GENERATE_CPP        - generates c++ code for the message if specified
 #   GENERATE_PYTHON     - generates python code for the message if specified
 # One value arguments:
+#   PYTHON_INTERPRETER  - Target or path to the Python interpreter to use to run generation scripts
 #   MSGS_GEN_SCRIPT     - Path to the message generation python script
 #   PROTO_PACKAGE       - Protobuf package the file belongs to (e.g. "gz.msgs")
 #   PROTOC_EXEC         - Path to protoc
@@ -22,6 +23,7 @@
 function(gz_msgs_protoc)
   set(options GENERATE_CPP GENERATE_PYTHON)
   set(oneValueArgs
+    PYTHON_INTERPRETER
     MSGS_GEN_SCRIPT
     PROTO_PACKAGE
     PROTOC_EXEC
@@ -124,7 +126,7 @@ function(gz_msgs_protoc)
 
   add_custom_command(
     OUTPUT ${output_files}
-    COMMAND Python3::Interpreter
+    COMMAND ${gz_msgs_protoc_PYTHON_INTERPRETER}
     ARGS ${gz_msgs_protoc_MSGS_GEN_SCRIPT} ${GENERATE_ARGS}
     DEPENDS
       ${ABS_FIL}
