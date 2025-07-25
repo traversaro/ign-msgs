@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -71,12 +72,12 @@ bool Generator::Generate(const FileDescriptor *_file,
                                OutputDirectory *_generatorContext,
                                std::string * /*_error*/) const
 {
-  std::string headerFilename = _file->name();
+  std::string headerFilename{_file->name()};
   std::string delim = ".proto";
   size_t pos = headerFilename.rfind(delim);
   headerFilename.replace(pos, delim.size(), ".pb.h");
 
-  std::string sourceFilename = _file->name();
+  std::string sourceFilename{_file->name()};
   pos = sourceFilename.rfind(delim);
   sourceFilename.replace(pos, delim.size(), ".pb.cc");
 
@@ -142,10 +143,12 @@ bool Generator::Generate(const FileDescriptor *_file,
     printer.Print("#endif\n", "name", "includes");
 
     // Call the IGN_REGISTER_STATIC_MSG macro
-    std::string factory = "IGN_REGISTER_STATIC_MSG(\"ign_msgs.";
-    factory += _file->message_type(0)->name() + "\", " +
-      _file->message_type(0)->name() +")";
-    printer.Print(factory.c_str(), "name", "includes");
+    std::stringstream factory;
+    factor << "IGN_REGISTER_STATIC_MSG(\"ign_msgs."
+           << _file->message_type(0)->name() << "\", "
+           << _file->message_type(0)->name() +")\n";
+    std::string factoryStr = factory.str();
+    printer.Print(factoryStr.c_str(), "name", "includes");
   }
 
   // Inject code in the auto-generated header files immediately before closing
@@ -156,27 +159,30 @@ bool Generator::Generate(const FileDescriptor *_file,
     io::Printer printer(output.get(), '$');
 
     // Define std::unique_ptr types for our messages
-    std::string ptrTypes = "typedef std::unique_ptr<"
-      + _file->message_type(0)->name() + "> "
-      + _file->message_type(0)->name() + "UniquePtr;\n";
+    std::stringstream ptrTypes;
+
+    ptrTypes << "typedef std::unique_ptr<"
+             << _file->message_type(0)->name() << "> "
+             << _file->message_type(0)->name() << "UniquePtr;\n";
 
     // Define const std::unique_ptr types for our messages
-    ptrTypes += "typedef std::unique_ptr<const "
-      + _file->message_type(0)->name() + "> Const"
-      + _file->message_type(0)->name() + "UniquePtr;\n";
+    ptrTypes << "typedef std::unique_ptr<const "
+             << _file->message_type(0)->name() << "> Const"
+             << _file->message_type(0)->name() << "UniquePtr;\n";
 
     // Define std::shared_ptr types for our messages
-    ptrTypes += "typedef std::shared_ptr<"
-      + _file->message_type(0)->name() + "> "
-      + _file->message_type(0)->name() + "SharedPtr;\n";
+    ptrTypes << "typedef std::shared_ptr<"
+             << _file->message_type(0)->name() << "> "
+             << _file->message_type(0)->name() << "SharedPtr;\n";
 
     // Define const std::shared_ptr types for our messages
-    ptrTypes += "typedef std::shared_ptr<const "
-      + _file->message_type(0)->name() + "> Const"
-      + _file->message_type(0)->name() + "SharedPtr;\n";
+    ptrTypes << "typedef std::shared_ptr<const "
+             << _file->message_type(0)->name() << "> Const"
+             << _file->message_type(0)->name() << "SharedPtr;\n";
 
-    printer.Print(ptrTypes.c_str(), "name", "namespace_scope");
-  }
+    std::string ptrTypesStr = ptrTypes.str();
+    printer.Print(ptrTypesStr.c_str(), "name", "namespace_scope");
+    
 
   // Pop the warning suppression stack for MSVC
   {
